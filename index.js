@@ -1,25 +1,45 @@
 const discord = require("discord.js")
+
+const { cmds, updateReply } = require("./src/cmds")
+
+const Logger = require("./extra/logger")
+const logger = new Logger()
+logger.setLevel(Logger.levels.DEBUG)
 require("dotenv").config()
 
 // Create a new client instance
 const client = new discord.Client({ intents: [discord.Intents.FLAGS.GUILDS] });
+const PREFIX = "!"
 
-client.once('ready', () => {
-	console.log('Ready!');
-});
+client.once("ready", async () => {
+	logger.info("Client Ready!", `(${client.user.username}#${client.user.discriminator})`)
+})
 
-client.on('interactionCreate', async interaction => {
-	if (!interaction.isCommand()) return;
+client.on("messageCreate", async msg => {
 
-	const { commandName } = interaction;
+	if ((msg.author.id == client.user.id) || !msg.content.startsWith(PREFIX)) return
+	msg.reply = updateReply(msg, client)
 
-	if (commandName === 'ping') {
-		await interaction.reply('Pong!');
-	} else if (commandName === 'server') {
-		await interaction.reply('Server info.');
-	} else if (commandName === 'user') {
-		await interaction.reply('User info.');
+	let args = msg.content.substring(PREFIX.length).replace(/\s+/gi, " ").split(" ")
+	let cmd = args[0];
+	args.shift(0)
+
+	if (cmds[cmd]) {
+		await cmds[cmd](args, msg, client)
 	}
+
+})
+
+client.on("interactionCreate", async interaction => {
+
+	if (!interaction.isCommand()) return;
+	interaction.reply = updateReply(interaction, client)
+
+	if (cmds[interaction.commandName]) {
+		await cmds[interaction.commandName](interaction.options.data, interaction, client)
+	}
+	
 });
 
-client.login(process.env.TOKEN);
+logger.info("Logging in...")
+client.login(process.env.TOKEN)

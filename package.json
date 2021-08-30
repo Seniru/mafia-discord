@@ -4,6 +4,8 @@
   "description": "Some mafia experience in Discord",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "slash": "node scripts/deploy-slash.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,8 +21,15 @@
   "dependencies": {
     "@discordjs/builders": "^0.6.0",
     "@discordjs/rest": "0.1.0-canary.0",
+    "chalk": "^4.1.2",
     "discord-api-types": "^0.22.0",
     "discord.js": "^13.1.0",
-    "dotenv": "^10.0.0"
+    "dotenv": "^10.0.0",
+    "pino-pretty": "^6.0.0"
+  },
+  "engine-strict": true,
+  "engines": {
+    "node": "16.8.0",
+    "yarn": "^1.0.0"
   }
 }
