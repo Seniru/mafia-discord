@@ -22,11 +22,16 @@ const commands = [
 				.setName("user")
 				.setDescription("The user to lynch")
 				.setRequired(true)
-		)
+		),
+
+	new SlashCommandBuilder()
+		.setName("setup")
+		.setDescription("Setup the server")
+
 ]
 	.map(command => command.toJSON())
 
-const rest = new REST({ version: '9' }).setToken(process.env.TOKEN)
+const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
 
 (async () => {
 	try {
